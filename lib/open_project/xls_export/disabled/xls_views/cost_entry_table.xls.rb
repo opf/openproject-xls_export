@@ -26,7 +26,7 @@ class CostEntryTable < XlsViews
     spreadsheet.add_title("#{@project.name + ' >> ' if @project}#{l(:cost_reports_title)} (#{format_date(Date.today)})")
 
     list = [:spent_on, :user_id, :activity_id, :issue_id, :comments, :project_id]
-    headers = list.collect { |field| label_for(field) }
+    headers = list.map { |field| label_for(field) }
     headers << l(:units)
     headers << l(:field_cost_type)
     headers << l(:field_costs)
@@ -36,7 +36,7 @@ class CostEntryTable < XlsViews
     spreadsheet.add_format_option_to_column(headers.length - 2, number_format: '0.0')
 
     query.each_direct_result do |result|
-      row = list.collect { |field| show_field field, result.fields[field.to_s] }
+      row = list.map { |field| show_field field, result.fields[field.to_s] }
       current_cost_type_id = result.fields['cost_type_id'].to_i
 
       row << show_result(result, current_cost_type_id) # units

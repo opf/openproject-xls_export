@@ -27,7 +27,7 @@ class SimpleCostReportTable < XlsViews
 
     list = query.collect(&:important_fields).flatten.uniq
     show_units = list.include? 'cost_type_id'
-    headers = list.collect { |field| label_for(field) }
+    headers = list.map { |field| label_for(field) }
     headers << label_for(:field_units) << '' if show_units
     headers << label_for(:label_sum) << ''
     spreadsheet.add_headers(headers)

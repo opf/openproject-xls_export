@@ -42,7 +42,7 @@ module OpenProject::XlsExport
           sb.add_headers headers, 0
 
           issues.each do |work_package|
-            row = (columns.collect do |column|
+            row = (columns.map do |column|
                      cv = formatters[column].format work_package, column
                      cv = cv.in_time_zone(current_user.time_zone) if cv.is_a?(ActiveSupport::TimeWithZone)
                      (cv.respond_to? :name) ? cv.name : cv
