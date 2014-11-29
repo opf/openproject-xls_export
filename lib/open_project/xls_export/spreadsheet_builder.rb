@@ -29,7 +29,7 @@ module OpenProject::XlsExport
       name ||= "Worksheet #{@worksheets.length + 1}"
       if @worksheets[idx].nil?
         @worksheets[idx] = Worksheet.new.tap do |wb|
-          wb.sheet = @xls.create_worksheet(:name => name)
+          wb.sheet = @xls.create_worksheet(name: name)
           wb.sheet.default_format.vertical_align = :top
           wb.column_widths = []
         end
@@ -97,7 +97,7 @@ module OpenProject::XlsExport
         value_width = get_value_width(arr_or_str[0] * 2)
         @column_widths[0] = value_width if (@column_widths[0] || 0) < value_width
       end
-      title_format = Spreadsheet::Format.new(:weight => :bold, :size => 18)
+      title_format = Spreadsheet::Format.new(weight: :bold, size: 18)
       @sheet.row(0).set_format(0, title_format)
     end
 
@@ -111,7 +111,7 @@ module OpenProject::XlsExport
     # second row in the document, but the row can be set using the second
     # optional parameter. The format is automatically set to bold font
     def add_headers(arr, idx = nil)
-      header_format = Spreadsheet::Format.new(:weight => :bold)
+      header_format = Spreadsheet::Format.new(weight: :bold)
       add_row(arr, idx)
       idx ||= @sheet.last_row_index
       (arr.size + 1).times { |i| @sheet.row(idx).set_format(i, header_format) }

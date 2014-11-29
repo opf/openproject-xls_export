@@ -12,7 +12,7 @@ class SimpleCostReportTable < XlsViews
       name = ary.last
 
       if @unit_id != 0
-        @query.filter :cost_type_id, :operator => '=', :value => @unit_id.to_s
+        @query.filter :cost_type_id, operator: '=', value: @unit_id.to_s
         @cost_type = CostType.find(unit_id) if unit_id > 0
       end
 
@@ -33,8 +33,8 @@ class SimpleCostReportTable < XlsViews
     spreadsheet.add_headers(headers)
 
     column = 0
-    spreadsheet.add_format_option_to_column(headers.length - (column += 1), :number_format => number_to_currency(0.00))
-    spreadsheet.add_format_option_to_column(headers.length - (column += 1), :number_format => "0.0 ?") if show_units
+    spreadsheet.add_format_option_to_column(headers.length - (column += 1), number_format: number_to_currency(0.00))
+    spreadsheet.add_format_option_to_column(headers.length - (column += 1), number_format: "0.0 ?") if show_units
 
     query.each do |result|
       current_cost_type_id = result.fields[:cost_type_id].to_i

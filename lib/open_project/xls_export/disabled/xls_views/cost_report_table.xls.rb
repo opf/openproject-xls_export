@@ -86,7 +86,7 @@ class CostReportTable < XlsViews
       name = ary.last
 
       if @unit_id != 0
-        @query.filter :cost_type_id, :operator => '=', :value => @unit_id.to_s
+        @query.filter :cost_type_id, operator: '=', value: @unit_id.to_s
         @cost_type = CostType.find(unit_id) if unit_id > 0
       end
 

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe WorkPackagesController, "rendering to xls", :type => :controller do
+describe WorkPackagesController, "rendering to xls", type: :controller do
   let(:current_user) { FactoryGirl.create(:admin) }
-  let!(:work_package) { FactoryGirl.create(:work_package, :subject => '!SUBJECT!',
-                                                   :description => '!DESCRIPTION!') }
+  let!(:work_package) { FactoryGirl.create(:work_package, subject: '!SUBJECT!',
+                                                   description: '!DESCRIPTION!') }
 
   before do
     allow(User).to receive(:current).and_return current_user
@@ -11,7 +11,7 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
 
   describe "should respond with the xls if requested in the index" do
     before do
-      get('index', :format => 'xls', :project_id => work_package.project_id)
+      get('index', format: 'xls', project_id: work_package.project_id)
     end
 
     it 'should respond with 200 OK' do
@@ -39,14 +39,14 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
     # Since this test has to work without the actual costs plugin we'll just add
     # a custom field called 'costs' to emulate it.
 
-    let(:custom_field) { FactoryGirl.create(:work_package_custom_field, :name => 'unit costs', :field_format => 'float') }
-    let(:custom_value) { FactoryGirl.create(:custom_value, :custom_field => custom_field) }
-    let(:project)      { FactoryGirl.create(:project, :work_package_custom_fields => [custom_field]) }
+    let(:custom_field) { FactoryGirl.create(:work_package_custom_field, name: 'unit costs', field_format: 'float') }
+    let(:custom_value) { FactoryGirl.create(:custom_value, custom_field: custom_field) }
+    let(:project)      { FactoryGirl.create(:project, work_package_custom_fields: [custom_field]) }
     let(:work_packages) do
       value = lambda do |val|
-        FactoryGirl.create(:custom_value, :custom_field => custom_field, :value => val)
+        FactoryGirl.create(:custom_value, custom_field: custom_field, value: val)
       end
-      wps = FactoryGirl.create_list(:work_package, 4, :project => project)
+      wps = FactoryGirl.create_list(:work_package, 4, project: project)
       wps[0].estimated_hours = 27.5
       wps[0].save!
       wps[1].custom_values << value.call(1)
@@ -67,10 +67,10 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
       allow(Setting).to receive(:plugin_openproject_costs).and_return({ 'costs_currency' => 'EUR','costs_currency_format' => '%n %u' })
 
       get 'index',
-        :format => 'xls',
-        :project_id => work_packages.first.project_id,
-        :set_filter => '1',
-        :c => ['subject', 'status', 'estimated_hours', "cf_#{custom_field.id}"]
+        format: 'xls',
+        project_id: work_packages.first.project_id,
+        set_filter: '1',
+        c: ['subject', 'status', 'estimated_hours', "cf_#{custom_field.id}"]
 
       expect(response.response_code).to eq(200)
 
@@ -107,9 +107,9 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
 
   context 'with descriptions' do
     before do
-      get('index', :format => 'xls',
-                   :project_id => work_package.project_id,
-                   :show_descriptions => 'true')
+      get('index', format: 'xls',
+                   project_id: work_package.project_id,
+                   show_descriptions: 'true')
     end
 
     it 'should respond with 200 OK' do
@@ -137,7 +137,7 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
     before do
       work_package.delete
 
-      get 'index', :format => 'xls', :project_id => work_package.project_id
+      get 'index', format: 'xls', project_id: work_package.project_id
     end
 
     it 'should yield an empty XLS file' do
@@ -169,10 +169,10 @@ describe WorkPackagesController, "rendering to xls", :type => :controller do
       end
 
       get 'index',
-          :format => 'xls',
-          :project_id => work_package.project_id,
-          :set_filter => '1',
-          :c => ['subject', 'status', 'updated_at']
+          format: 'xls',
+          project_id: work_package.project_id,
+          set_filter: '1',
+          c: ['subject', 'status', 'updated_at']
 
       expect(response.response_code).to eq(200)
 
