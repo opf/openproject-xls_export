@@ -16,9 +16,8 @@ if require_dependency 'cost_reports_controller'
       end
 
       module InstanceMethods
-
         def excel_export?
-          (params["action"] == "index" or params[:action] == "all") && params["format"] == "xls"
+          (params['action'] == 'index' or params[:action] == 'all') && params['format'] == 'xls'
         end
 
         def ensure_project_scope_with_excel_export?
@@ -33,7 +32,7 @@ if require_dependency 'cost_reports_controller'
               format.xls do
                 report = report_to_xls
                 time = DateTime.now.strftime('%d-%m-%Y-T-%H-%M-%S')
-                send_data(report, :type => :xls, :filename => "export-#{time}.xls") if report
+                send_data(report, type: :xls, filename: "export-#{time}.xls") if report
               end
             end
           else
@@ -43,7 +42,7 @@ if require_dependency 'cost_reports_controller'
 
         # Build an xls file from a cost report.
         def report_to_xls
-          options = { :query => @query, :project => @project, :cost_types => @cost_types }
+          options = { query: @query, project: @project, cost_types: @cost_types }
 
           if @query.group_bys.empty?
             sb = CostEntryTable.generate(options)
