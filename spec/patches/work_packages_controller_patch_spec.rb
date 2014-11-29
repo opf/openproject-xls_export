@@ -1,15 +1,17 @@
 require 'spec_helper'
 
-describe WorkPackagesController, "rendering to xls", type: :controller do
+describe WorkPackagesController, 'rendering to xls', type: :controller do
   let(:current_user) { FactoryGirl.create(:admin) }
-  let!(:work_package) { FactoryGirl.create(:work_package, subject: '!SUBJECT!',
-                                                   description: '!DESCRIPTION!') }
+  let!(:work_package) {
+    FactoryGirl.create(:work_package, subject: '!SUBJECT!',
+                                      description: '!DESCRIPTION!')
+  }
 
   before do
     allow(User).to receive(:current).and_return current_user
   end
 
-  describe "should respond with the xls if requested in the index" do
+  describe 'should respond with the xls if requested in the index' do
     before do
       get('index', format: 'xls', project_id: work_package.project_id)
     end
@@ -64,13 +66,13 @@ describe WorkPackagesController, "rendering to xls", type: :controller do
         column.caption =~ /cost/i
       end
 
-      allow(Setting).to receive(:plugin_openproject_costs).and_return({ 'costs_currency' => 'EUR','costs_currency_format' => '%n %u' })
+      allow(Setting).to receive(:plugin_openproject_costs).and_return('costs_currency' => 'EUR', 'costs_currency_format' => '%n %u')
 
       get 'index',
-        format: 'xls',
-        project_id: work_packages.first.project_id,
-        set_filter: '1',
-        c: ['subject', 'status', 'estimated_hours', "cf_#{custom_field.id}"]
+          format: 'xls',
+          project_id: work_packages.first.project_id,
+          set_filter: '1',
+          c: ['subject', 'status', 'estimated_hours', "cf_#{custom_field.id}"]
 
       expect(response.response_code).to eq(200)
 

@@ -14,7 +14,6 @@ require 'spreadsheet'
 
 module OpenProject::XlsExport
   class SpreadsheetBuilder
-
     Worksheet = Struct.new(:sheet, :column_widths) unless defined? Worksheet
 
     def initialize(name = nil)
@@ -62,7 +61,7 @@ module OpenProject::XlsExport
       end
 
       tot_w = [Float(0)]
-      idx=0
+      idx = 0
       value.to_s.each_char do |c|
         case c
         when '0'..'9'
@@ -79,12 +78,12 @@ module OpenProject::XlsExport
         end
       end
 
-      wdth=0
+      wdth = 0
       tot_w.each do |w|
-        wdth = w unless w<wdth
+        wdth = w unless w < wdth
       end
 
-      return wdth+1.5
+      wdth + 1.5
     end
 
     # Add a "Title". This basically just set the first column to
@@ -104,7 +103,7 @@ module OpenProject::XlsExport
     # Add an empty row in the next sequential position. Convenience method
     # for calling add_row([""])
     def add_empty_row
-      add_row([""])
+      add_row([''])
     end
 
     # Add headers. This is usually used for adding a table header to the
@@ -123,13 +122,13 @@ module OpenProject::XlsExport
     def add_row(arr, idx = nil)
       idx ||= [@sheet.last_row_index + 1, 1].max
       column_array = []
-      arr.each_with_index do |c,i|
+      arr.each_with_index do |c, i|
         value = if ['Time', 'Date', 'Fixnum', 'Float', 'Integer'].include?(c.class.name)
-          c
-        elsif c.class == BigDecimal
-          c.to_f
-        else
-          c.to_s.gsub('_', ' ').gsub("\r\n", "\n").gsub("\r", "\n")
+                  c
+                elsif c.class == BigDecimal
+                  c.to_f
+                else
+                  c.to_s.gsub('_', ' ').gsub("\r\n", "\n").gsub("\r", "\n")
         end
         column_array << value
         @column_widths[i] = 0 if @column_widths[i].nil?
@@ -143,7 +142,7 @@ module OpenProject::XlsExport
     def add_format_option_to_column(index, opt)
       unless opt.empty?
         fmt = @sheet.column(index).default_format.clone
-        opt.each do |k,v|
+        opt.each do |k, v|
           fmt.send(:"#{k.to_sym}=", v) if fmt.respond_to? :"#{k.to_sym}="
         end
         @sheet.column(index).default_format = fmt
@@ -167,7 +166,8 @@ module OpenProject::XlsExport
       io.read
     end
 
-  private
+    private
+
     def raw_xls
       @xls
     end

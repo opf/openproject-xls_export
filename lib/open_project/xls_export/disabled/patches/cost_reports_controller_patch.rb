@@ -16,9 +16,8 @@ if require_dependency 'cost_reports_controller'
       end
 
       module InstanceMethods
-
         def excel_export?
-          (params["action"] == "index" or params[:action] == "all") && params["format"] == "xls"
+          (params['action'] == 'index' or params[:action] == 'all') && params['format'] == 'xls'
         end
 
         def ensure_project_scope_with_excel_export?
