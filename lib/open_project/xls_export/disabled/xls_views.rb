@@ -11,12 +11,12 @@ class XlsViews
     when :units                     then value.to_i
     when :spent_on                  then value
     when :activity_id               then mapped value, Enumeration, l(:caption_material_costs)
-    when :project_id                then (l(:label_none) if value.to_i == 0) or Project.find(value.to_i).name
-    when :user_id, :assigned_to_id  then (l(:label_none) if value.to_i == 0) or User.find(value.to_i).name
+    when :project_id                then (l(:label_none) if value.to_i == 0) || Project.find(value.to_i).name
+    when :user_id, :assigned_to_id  then (l(:label_none) if value.to_i == 0) || User.find(value.to_i).name
     when :issue_id
       return l(:label_none) if value.to_i == 0
       issue = Issue.find(value.to_i)
-      "#{issue.project.name + " - " if @project}#{issue.tracker} ##{issue.id}: #{issue.subject}"
+      "#{issue.project.name + ' - ' if @project}#{issue.tracker} ##{issue.id}: #{issue.subject}"
     else super(key, value)
     end
   end
@@ -31,7 +31,7 @@ class XlsViews
 
   def cost_type_unit_label(cost_type_id, cost_type_inst = nil, plural = true)
     case cost_type_id
-    when -1 then l_hours(2).split[1..-1].join(" ") # get the plural for hours
+    when -1 then l_hours(2).split[1..-1].join(' ') # get the plural for hours
     when 0  then Setting.plugin_redmine_costs['costs_currency']
     else cost_type_label(cost_type_id, cost_type_inst, plural)
     end
@@ -39,14 +39,14 @@ class XlsViews
 
   def serialize_query_without_hidden(query)
     serialized_query = query.serialize
-    serialized_query[:filters] = serialized_query[:filters].reject do |name, options|
+    serialized_query[:filters] = serialized_query[:filters].reject do |_name, options|
       options[:display] == false
     end
     serialized_query
   end
 
   def self.generate(opts)
-    self.new.tap do |obj|
+    new.tap do |obj|
       obj.query = opts[:query]
       obj.cost_type = opts[:cost_type]
       obj.unit_id = opts[:unit_id]

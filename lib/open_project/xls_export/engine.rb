@@ -5,8 +5,8 @@ module OpenProject::XlsExport
     include OpenProject::Plugins::ActsAsOpEngine
 
     register 'openproject-xls_export',
-             :author_url => 'http://finn.de/',
-             :requires_openproject => '>= 4.0.0'
+             author_url: 'http://finn.de/',
+             requires_openproject: '>= 4.0.0'
 
     patches [:WorkPackagesController, :QueryColumn]
     # disabled since not yet migrated: :CostReportsController

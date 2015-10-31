@@ -2,7 +2,7 @@ require_dependency 'xls_report/xls_views'
 
 class CostReportTable < XlsViews
   def final_row(final_row, cells)
-    row = [show_row final_row]
+    row = [show_row, final_row]
     row += cells
     row << show_result(final_row)
   end
@@ -17,7 +17,9 @@ class CostReportTable < XlsViews
         else
           array += subrow.collect(&:flatten)
         end
+        array
       end
+
       subrows.each_with_index do |subrow, idx|
         if idx == 0
           subrow.insert(0, show_row(row))
@@ -35,7 +37,7 @@ class CostReportTable < XlsViews
     show_result result
   end
 
-  def headers(list, first, first_in_col, last_in_col)
+  def headers(list, _first, first_in_col, last_in_col)
     if first_in_col # Open a new header row
       @header = [""] * query.depth_of(:row) # TODO: needs borders: rowspan=query.depth_of(:column)
     end
@@ -86,7 +88,7 @@ class CostReportTable < XlsViews
       name = ary.last
 
       if @unit_id != 0
-        @query.filter :cost_type_id, :operator => '=', :value => @unit_id.to_s
+        @query.filter :cost_type_id, operator: '=', value: @unit_id.to_s
         @cost_type = CostType.find(unit_id) if unit_id > 0
       end
 
@@ -117,7 +119,9 @@ class CostReportTable < XlsViews
   end
 
   def build_spreadsheet
-    spreadsheet.add_title("#{@project.name + " >> " if @project}#{l(:cost_reports_title)} (#{format_date(Date.today)})")
+    spreadsheet.add_title(
+      "#{@project.name + " >> " if @project}#{l(:cost_reports_title)} (#{format_date(Time.zone.today)})"
+    )
     spreadsheet.add_headers [label]
     row_length = @headers.first.length
     @headers.each {|head| spreadsheet.add_headers(head, spreadsheet.current_row) }
@@ -128,9 +132,9 @@ class CostReportTable < XlsViews
 
   def label
     "#{l(:caption_cost_type)}: " + case unit_id
-    when -1 then l(:field_hours)
-    when 0  then "EUR"
-    else cost_type.unit_plural
+                                   when -1 then l(:field_hours)
+                                   when 0  then "EUR"
+                                   else cost_type.unit_plural
     end
   end
 end
